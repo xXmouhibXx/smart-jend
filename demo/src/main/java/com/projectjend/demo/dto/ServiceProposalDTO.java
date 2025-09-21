@@ -1,12 +1,18 @@
 package com.projectjend.demo.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import java.time.LocalDate;
 
 public record ServiceProposalDTO(
     @NotBlank String name,
     @NotBlank String description,
-    /**
-     * "lat,lon" string, e.g. "36.81,10.17"
-     */
-    @NotBlank String location
+    @NotBlank String location,
+    String ownerEmail,
+    LocalDate endDate,
+    String reservationLink,
+    String delegation,
+    String sector,
+    String provider,
+    String institution,
+    String category
 ) {}

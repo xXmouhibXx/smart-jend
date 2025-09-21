@@ -39,12 +39,27 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                // Public endpoints - no authentication required
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/services").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/services/*/reviews").permitAll() // ALLOW PUBLIC ACCESS TO REVIEWS
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                .requestMatchers("/h2-console/**").permitAll()
+                
+                // Protected endpoints - authentication required
+                .requestMatchers(HttpMethod.POST, "/api/services").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/api/services/*").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "/api/services/*").authenticated()
+                .requestMatchers(HttpMethod.POST, "/api/services/*/vote").authenticated()
+                .requestMatchers(HttpMethod.POST, "/api/services/*/review").authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/services/*/has-reviewed").authenticated()
+                .requestMatchers("/api/accounts/**").authenticated()
+                
+                // All other requests require authentication
                 .anyRequest().authenticated()
             )
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+            .headers(headers -> headers.frameOptions().disable()); // For H2 console
         
         return http.build();
     }

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "accounts", uniqueConstraints = {
@@ -23,4 +24,16 @@ public class Account extends BaseEntity {
 
   @NotBlank
   private String password;
+  
+  // New fields for client registration
+  private String phone;
+  
+  @Column(name = "birth_date")
+  private LocalDate birthDate;
+  
+  private String gender;
+  
+  private String delegation;
+  
+  private String sector;
 }
